@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercices CM1 - Inès</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message {
+            text-align: center;
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-button {
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .math-btn { background: linear-gradient(135deg, #ff6b6b, #ff8787); }
+        .french-btn { background: linear-gradient(135deg, #4ecdc4, #44a3aa); }
+        .history-btn { background: linear-gradient(135deg, #f7b731, #f5a623); }
+        .science-btn { background: linear-gradient(135deg, #5f27cd, #7c4dff); }
+        .quiz-btn { background: linear-gradient(135deg, #00d2ff, #3a7bd5); }
+        .stats-btn { background: linear-gradient(135deg, #a8e063, #56ab2f); }
+
+        .exercise-area {
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .answers {
+            display: grid;
+            gap: 15px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background: #f0f0f0;
+            border-color: #764ba2;
+            transform: translateX(5px);
+        }
+
+        .answer-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            animation: pulse 0.5s;
+        }
+
+        .answer-btn.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .dont-understand-btn {
+            background: linear-gradient(135deg, #fc5c7d, #6a82fb);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .dont-understand-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #56ab2f, #a8e063);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3em;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        .stats-panel {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .problem-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            border-radius: 5px;
+        }
+
+        .dont-understand-item {
+            border-left-color: #ffc107;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin: 0 5px;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            animation: bounceIn 1s;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .ai-analysis {
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #00acc1;
+        }
+
+        .ai-analysis h3 {
+            color: #00838f;
+            margin-bottom: 15px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Exercices CM1 - Inès 🌟</h1>
+        
+        <div id="mainMenu" class="main-menu">
+            <div class="welcome-message">Bonjour Inès ! Choisis ce que tu veux faire aujourd'hui 😊</div>
+            <button class="menu-button math-btn" onclick="startSubject('math')">
+                <span class="emoji">🔢</span> Mathématiques
+            </button>
+            <button class="menu-button french-btn" onclick="startSubject('french')">
+                <span class="emoji">📚</span> Français
+            </button>
+            <button class="menu-button history-btn" onclick="startSubject('history')">
+                <span class="emoji">🏛️</span> Histoire-Géo
+            </button>
+            <button class="menu-button science-btn" onclick="startSubject('science')">
+                <span class="emoji">🔬</span> Sciences
+            </button>
+            <button class="menu-button quiz-btn" onclick="startQuizMode()">
+                <span class="emoji">🎯</span> Quiz Multi-Matières
+            </button>
+            <button class="menu-button stats-btn" onclick="showStats()">
+                <span class="emoji">📊</span> Voir mes résultats
+            </button>
+        </div>
+
+        <div id="exerciseArea" class="exercise-area">
+            <button class="back-btn" onclick="backToMenu()">← Retour au menu</button>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill">0%</div>
+            </div>
+            <div id="scoreDisplay" class="score-display"></div>
+            <div id="questionCard" class="question-card"></div>
+        </div>
+
+        <div id="statsPanel" class="stats-panel">
+            <button class="back-btn" onclick="backToMenu()">← Retour au menu</button>
+            <h2>📊 Tes résultats</h2>
+            
+            <div id="aiAnalysis" class="ai-analysis"></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>❌ Questions avec erreurs</h3>
+                    <div id="wrongAnswers"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>❓ Je ne comprends pas</h3>
+                    <div id="dontUnderstand"></div>
+                </div>
+            </div>
+            
+            <div class="stat-card" style="margin-top: 20px;">
+                <h3>📈 Progression générale</h3>
+                <div id="generalStats"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de questions simplifiée mais variée
+        const questionsDB = {
+            math: [
+                { q: "Combien font 7 × 8 ?", a: ["56", "54", "58", "52"], correct: 0, theme: "Tables" },
+                { q: "Combien font 9 × 6 ?", a: ["52", "54", "56", "58"], correct: 1, theme: "Tables" },
+                { q: "Combien font 125 + 238 ?", a: ["353", "363", "373", "343"], correct: 1, theme: "Addition" },
+                { q: "Combien font 500 - 247 ?", a: ["253", "263", "243", "273"], correct: 0, theme: "Soustraction" },
+                { q: "Quel est le double de 47 ?", a: ["84", "94", "74", "104"], correct: 1, theme: "Double" },
+                { q: "Quelle est la moitié de 84 ?", a: ["42", "44", "40", "38"], correct: 0, theme: "Moitié" },
+                { q: "Combien font 15 × 10 ?", a: ["150", "105", "1500", "15"], correct: 0, theme: "×10" },
+                { q: "Que représente 1/2 ?", a: ["La moitié", "Le double", "Le quart", "Le tiers"], correct: 0, theme: "Fractions" },
+                { q: "Combien de côtés a un hexagone ?", a: ["5", "6", "7", "8"], correct: 1, theme: "Géométrie" },
+                { q: "Quel est le périmètre d'un carré de 5 cm de côté ?", a: ["20 cm", "25 cm", "10 cm", "15 cm"], correct: 0, theme: "Périmètre" },
+                { q: "Combien font 8 × 7 ?", a: ["54", "56", "58", "52"], correct: 1, theme: "Tables" },
+                { q: "Combien font 456 + 287 ?", a: ["743", "733", "753", "723"], correct: 0, theme: "Addition" },
+                { q: "Combien font 632 - 178 ?", a: ["454", "464", "444", "474"], correct: 0, theme: "Soustraction" },
+                { q: "Quel est le double de 35 ?", a: ["70", "65", "75", "60"], correct: 0, theme: "Double" },
+                { q: "Combien font 23 × 100 ?", a: ["2300", "230", "23000", "203"], correct: 0, theme: "×100" },
+                { q: "Combien font 3/4 de 20 ?", a: ["15", "10", "5", "12"], correct: 0, theme: "Fractions" },
+                { q: "Comment s'appelle un angle de 90° ?", a: ["Angle aigu", "Angle droit", "Angle obtus", "Angle plat"], correct: 1, theme: "Géométrie" },
+                { q: "Combien de faces a un cube ?", a: ["4", "5", "6", "8"], correct: 2, theme: "Géométrie" },
+                { q: "Un livre coûte 12€. Combien coûtent 5 livres ?", a: ["50€", "60€", "55€", "65€"], correct: 1, theme: "Problèmes" },
+                { q: "Il y a 28 élèves. 12 sont des filles. Combien de garçons ?", a: ["16", "14", "18", "20"], correct: 0, theme: "Problèmes" }
+            ],
+            
+            french: [
+                { q: "Conjugue 'finir' au présent : il...", a: ["finit", "fini", "finis", "finissent"], correct: 0, theme: "Conjugaison" },
+                { q: "Quel est l'infinitif dans 'Nous mangeons' ?", a: ["mangé", "manger", "mangeons", "mange"], correct: 1, theme: "Conjugaison" },
+                { q: "Complète : Les enfants sont parti...", a: ["s", "es", "ent", ""], correct: 0, theme: "Accord" },
+                { q: "Quel est le pluriel de 'cheval' ?", a: ["chevals", "chevaux", "chevaus", "cheveaux"], correct: 1, theme: "Pluriel" },
+                { q: "Nature du mot 'rapidement' ?", a: ["Adjectif", "Adverbe", "Nom", "Verbe"], correct: 1, theme: "Grammaire" },
+                { q: "Dans 'Le chat mange', quel est le sujet ?", a: ["Le", "chat", "Le chat", "mange"], correct: 2, theme: "Grammaire" },
+                { q: "Synonyme de 'grand' ?", a: ["petit", "immense", "court", "bas"], correct: 1, theme: "Vocabulaire" },
+                { q: "Antonyme de 'monter' ?", a: ["descendre", "grimper", "escalader", "partir"], correct: 0, theme: "Vocabulaire" },
+                { q: "Conjugue 'être' au présent : vous...", a: ["êtes", "êtent", "ette", "ête"], correct: 0, theme: "Conjugaison" },
+                { q: "Quel est le COD dans 'Marie lit un livre' ?", a: ["Marie", "lit", "un", "un livre"], correct: 3, theme: "Grammaire" },
+                { q: "Comment s'écrit : ch_teau ?", a: ["a", "au", "eau", "â"], correct: 2, theme: "Orthographe" },
+                { q: "Quel est le pluriel de 'journal' ?", a: ["journals", "journaux", "journeaux", "journaus"], correct: 1, theme: "Pluriel" },
+                { q: "Temps dans 'Elle chantera' ?", a: ["Présent", "Imparfait", "Futur", "Passé composé"], correct: 2, theme: "Conjugaison" },
+                { q: "Nature du mot 'et' ?", a: ["Conjonction", "Préposition", "Adverbe", "Pronom"], correct: 0, theme: "Grammaire" },
+                { q: "Féminin de 'beau' ?", a: ["belle", "bele", "beaue", "bel"], correct: 0, theme: "Accord" },
+                { q: "Préfixe 're-' signifie ?", a: ["avant", "après", "à nouveau", "contre"], correct: 2, theme: "Vocabulaire" },
+                { q: "Choisis : Il _ mangé", a: ["a", "à", "as", "ah"], correct: 0, theme: "Homophones" },
+                { q: "Type de phrase : 'Quelle belle journée !' ?", a: ["Déclarative", "Interrogative", "Exclamative", "Impérative"], correct: 2, theme: "Grammaire" },
+                { q: "Participe passé de 'prendre' ?", a: ["pris", "prit", "prend", "prendu"], correct: 0, theme: "Conjugaison" },
+                { q: "Comment s'écrit 80 ?", a: ["quatre-vingts", "quatre-vingt", "quatrevingt", "quatre vingt"], correct: 0, theme: "Orthographe" }
+            ],
+            
+            history: [
+                { q: "Premiers hommes ?", a: ["Homo sapiens", "Homo habilis", "Australopithèque", "Tous"], correct: 3, theme: "Préhistoire" },
+                { q: "Invention du feu ?", a: ["Écriture", "Feu", "Roue", "Agriculture"], correct: 1, theme: "Préhistoire" },
+                { q: "Qui étaient les Gaulois ?", a: ["Ancêtres des Français", "Romains", "Grecs", "Égyptiens"], correct: 0, theme: "Antiquité" },
+                { q: "Chef gaulois contre Rome ?", a: ["Clovis", "Vercingétorix", "Charlemagne", "César"], correct: 1, theme: "Antiquité" },
+                { q: "Écriture égyptienne ?", a: ["Alphabet", "Hiéroglyphes", "Cunéiforme", "Idéogrammes"], correct: 1, theme: "Antiquité" },
+                { q: "Habitants des châteaux forts ?", a: ["Paysans", "Seigneurs", "Esclaves", "Présidents"], correct: 1, theme: "Moyen Âge" },
+                { q: "Devenir chevalier ?", a: ["Baptême", "Adoubement", "Mariage", "Sacre"], correct: 1, theme: "Moyen Âge" },
+                { q: "Capitale de la France ?", a: ["Lyon", "Marseille", "Paris", "Toulouse"], correct: 2, theme: "Géographie" },
+                { q: "Plus long fleuve de France ?", a: ["Seine", "Loire", "Rhône", "Garonne"], correct: 1, theme: "Géographie" },
+                { q: "Nombre de continents ?", a: ["5", "6", "7", "8"], correct: 1, theme: "Géographie" },
+                { q: "Découverte de l'Amérique ?", a: ["Magellan", "Colomb", "Vasco", "Cartier"], correct: 1, theme: "Temps modernes" },
+                { q: "Le Roi-Soleil ?", a: ["Louis XIII", "Louis XIV", "Louis XV", "Louis XVI"], correct: 1, theme: "Temps modernes" },
+                { q: "Révolution française ?", a: ["1789", "1889", "1689", "1989"], correct: 0, theme: "Révolution" },
+                { q: "La Bastille était ?", a: ["Château", "Prison", "Église", "Musée"], correct: 1, theme: "Révolution" },
+                { q: "Napoléon était ?", a: ["Roi", "Empereur", "Président", "Général"], correct: 1, theme: "Empire" },
+                { q: "Tour de 1889 ?", a: ["Montparnasse", "Eiffel", "Arc Triomphe", "Notre-Dame"], correct: 1, theme: "XIXe siècle" },
+                { q: "Montagnes France-Espagne ?", a: ["Alpes", "Pyrénées", "Jura", "Vosges"], correct: 1, theme: "Géographie" },
+                { q: "Plus haute montagne France ?", a: ["Pic du Midi", "Mont Blanc", "Puy de Dôme", "Ventoux"], correct: 1, theme: "Géographie" },
+                { q: "Mer au sud de la France ?", a: ["Nord", "Méditerranée", "Baltique", "Noire"], correct: 1, theme: "Géographie" },
+                { q: "Ligne autour de la Terre ?", a: ["Méridien", "Équateur", "Tropique", "Parallèle"], correct: 1, theme: "Géographie" }
+            ],
+            
+            science: [
+                { q: "Nombre d'os adulte ?", a: ["106", "206", "306", "406"], correct: 1, theme: "Corps" },
+                { q: "Rôle du cœur ?", a: ["Respirer", "Digérer", "Circuler le sang", "Penser"], correct: 2, theme: "Corps" },
+                { q: "Nombre de dents adulte ?", a: ["28", "30", "32", "34"], correct: 2, theme: "Corps" },
+                { q: "Mangeurs d'herbe ?", a: ["Carnivores", "Herbivores", "Omnivores", "Insectivores"], correct: 1, theme: "Animaux" },
+                { q: "Mammifère marin ?", a: ["Requin", "Aigle", "Baleine", "Crocodile"], correct: 2, theme: "Animaux" },
+                { q: "Reproduction oiseaux ?", a: ["Bébés", "Œufs", "Larves", "Têtards"], correct: 1, theme: "Animaux" },
+                { q: "Besoins des plantes ?", a: ["Eau, lumière, air", "Eau seule", "Lumière seule", "Rien"], correct: 0, theme: "Plantes" },
+                { q: "Eau → vapeur ?", a: ["Condensation", "Évaporation", "Solidification", "Fusion"], correct: 1, theme: "Matière" },
+                { q: "Température gel eau ?", a: ["0°C", "10°C", "100°C", "-10°C"], correct: 0, theme: "Matière" },
+                { q: "Pollution de l'air ?", a: ["Arbres", "Voitures/usines", "Animaux", "Eau"], correct: 1, theme: "Environnement" },
+                { q: "Organe respiration ?", a: ["Foie", "Poumons", "Estomac", "Reins"], correct: 1, theme: "Corps" },
+                { q: "Nombre de sens ?", a: ["3", "4", "5", "6"], correct: 2, theme: "Corps" },
+                { q: "Respiration poissons ?", a: ["Poumons", "Branchies", "Peau", "Pas de respiration"], correct: 1, theme: "Animaux" },
+                { q: "Animal hibernant ?", a: ["Chien", "Ours", "Chat", "Vache"], correct: 1, theme: "Animaux" },
+                { q: "Pattes araignée ?", a: ["6", "8", "10", "12"], correct: 1, theme: "Animaux" },
+                { q: "Racines servent à ?", a: ["Décorer", "Absorber l'eau", "Respirer", "Fleurir"], correct: 1, theme: "Plantes" },
+                { q: "Température ébullition eau ?", a: ["50°C", "100°C", "150°C", "200°C"], correct: 1, theme: "Matière" },
+                { q: "Énergie renouvelable ?", a: ["Pétrole", "Solaire", "Charbon", "Gaz"], correct: 1, theme: "Environnement" },
+                { q: "Couche d'ozone protège de ?", a: ["Froid", "Rayons solaires", "Pluie", "Vent"], correct: 1, theme: "Environnement" },
+                { q: "Circuit électrique ?", a: ["Chemin eau", "Chemin électricité", "Chemin air", "Route"], correct: 1, theme: "Technologie" }
+            ]
+        };
+
+        // Variables globales
+        let currentSubject = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let results = [];
+        let isQuizMode = false;
+
+        // Gestion des données
+        function loadData() {
+            const saved = localStorage.getItem('inesResults');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveData(data) {
+            localStorage.setItem('inesResults', JSON.stringify(data));
+        }
+
+        // Démarrer exercices
+        function startSubject(subject) {
+            currentSubject = subject;
+            isQuizMode = false;
+            currentQuestions = shuffleArray([...questionsDB[subject]]).slice(0, 10);
+            currentQuestionIndex = 0;
+            score = 0;
+            results = [];
+            
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('statsPanel').style.display = 'none';
+            document.getElementById('exerciseArea').style.display = 'block';
+            
+            showQuestion();
+        }
+
+        // Mode Quiz
+        function startQuizMode() {
+            isQuizMode = true;
+            currentQuestions = [];
+            
+            Object.keys(questionsDB).forEach(subject => {
+                const subjectQuestions = shuffleArray([...questionsDB[subject]]).slice(0, 3);
+                subjectQuestions.forEach(q => {
+                    q.subject = subject;
+                    currentQuestions.push(q);
+                });
+            });
+            
+            currentQuestions = shuffleArray(currentQuestions);
+            currentQuestionIndex = 0;
+            score = 0;
+            results = [];
+            
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('statsPanel').style.display = 'none';
+            document.getElementById('exerciseArea').style.display = 'block';
+            
+            showQuestion();
+        }
+
+        // Afficher question
+        function showQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+            
+            const question = currentQuestions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressFill').textContent = Math.round(progress) + '%';
+            document.getElementById('scoreDisplay').innerHTML = `Score: ${score}/${currentQuestionIndex} ⭐`;
+            
+            let html = `<div class="question">${question.q}</div><div class="answers">`;
+            
+            const shuffledAnswers = shuffleArray(question.a.map((answer, index) => ({text: answer, originalIndex: index})));
+            
+            shuffledAnswers.forEach(answer => {
+                html += `<button class="answer-btn" onclick="checkAnswer(${answer.originalIndex}, this)">${answer.text}</button>`;
+            });
+            
+            html += `</div><button class="dont-understand-btn" onclick="dontUnderstand()">🤔 Je ne comprends pas</button>`;
+            
+            document.getElementById('questionCard').innerHTML = html;
+        }
+
+        // Vérifier réponse
+        function checkAnswer(answerIndex, button) {
+            const question = currentQuestions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.answer-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            const result = {
+                date: new Date().toISOString().split('T')[0],
+                subject: isQuizMode ? question.subject : currentSubject,
+                question: question.q,
+                theme: question.theme,
+                userAnswer: question.a[answerIndex],
+                correctAnswer: question.a[question.correct],
+                isCorrect: answerIndex === question.correct,
+                isDontUnderstand: false
+            };
+            
+            if (answerIndex === question.correct) {
+                button.classList.add('correct');
+                score++;
+                showMessage("Bravo ! 🎉", true);
+            } else {
+                button.classList.add('incorrect');
+                buttons.forEach((btn, idx) => {
+                    if (btn.textContent === question.a[question.correct]) {
+                        btn.classList.add('correct');
+                    }
+                });
+                showMessage("Continue, tu progresses ! 💪", false);
+            }
+            
+            results.push(result);
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 2000);
+        }
+
+        // Je ne comprends pas
+        function dontUnderstand() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            const result = {
+                date: new Date().toISOString().split('T')[0],
+                subject: isQuizMode ? question.subject : currentSubject,
+                question: question.q,
+                theme: question.theme,
+                userAnswer: "Je ne comprends pas",
+                correctAnswer: question.a[question.correct],
+                isCorrect: false,
+                isDontUnderstand: true
+            };
+            
+            results.push(result);
+            
+            document.getElementById('questionCard').innerHTML += `
+                <div class="achievement">
+                    <div>🤗 C'est bien de demander de l'aide !</div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 2500);
+        }
+
+        // Message d'encouragement
+        function showMessage(text, isCorrect) {
+            const elem = document.createElement('div');
+            elem.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: ${isCorrect ? '#28a745' : '#ffc107'};
+                color: white;
+                padding: 20px 40px;
+                border-radius: 20px;
+                font-size: 1.5em;
+                font-weight: bold;
+                z-index: 1000;
+            `;
+            elem.textContent = text;
+            document.body.appendChild(elem);
+            setTimeout(() => elem.remove(), 2000);
+        }
+
+        // Résultats finaux
+        function showResults() {
+            const savedData = loadData();
+            savedData.push(...results);
+            saveData(savedData);
+            
+            const percentage = (score / currentQuestions.length) * 100;
+            let stars = '⭐';
+            if (percentage >= 90) stars = '⭐⭐⭐⭐⭐';
+            else if (percentage >= 70) stars = '⭐⭐⭐⭐';
+            else if (percentage >= 50) stars = '⭐⭐⭐';
+            else if (percentage >= 30) stars = '⭐⭐';
+            
+            document.getElementById('questionCard').innerHTML = `
+                <div class="achievement">
+                    <h2>Exercice terminé ! 🎊</h2>
+                    <div style="font-size: 2em;">${stars}</div>
+                    <div style="font-size: 1.5em; margin: 20px 0;">
+                        Score : ${score}/${currentQuestions.length}
+                    </div>
+                    <div>${percentage >= 70 ? 'Excellent travail !' : 'Continue comme ça !'}</div>
+                    <button class="menu-button quiz-btn" onclick="backToMenu()" style="margin-top: 20px;">
+                        Retour au menu
+                    </button>
+                </div>
+            `;
+        }
+
+        // Statistiques
+        function showStats() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('exerciseArea').style.display = 'none';
+            document.getElementById('statsPanel').style.display = 'block';
+            
+            const data = loadData();
+            
+            // Analyse IA
+            const errors = data.filter(item => !item.isCorrect && !item.isDontUnderstand);
+            if (errors.length > 0) {
+                const themeCount = {};
+                errors.forEach(e => {
+                    themeCount[e.theme] = (themeCount[e.theme] || 0) + 1;
+                });
+                
+                const topThemes = Object.entries(themeCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3);
+                
+                let analysis = '<h3>🤖 Analyse des résultats</h3>';
+                if (topThemes.length > 0) {
+                    analysis += '<p>Thèmes à retravailler :</p>';
+                    topThemes.forEach(([theme, count]) => {
+                        analysis += `<div>• ${theme} (${count} erreur${count > 1 ? 's' : ''})</div>`;
+                    });
+                } else {
+                    analysis = '<h3>🎉 Parfait ! Aucune difficulté détectée</h3>';
+                }
+                document.getElementById('aiAnalysis').innerHTML = analysis;
+            } else {
+                document.getElementById('aiAnalysis').innerHTML = '<h3>🎉 Aucune erreur ! Bravo Inès !</h3>';
+            }
+            
+            // Erreurs
+            const wrongAnswers = data.filter(item => !item.isCorrect && !item.isDontUnderstand);
+            let wrongHtml = '';
+            if (wrongAnswers.length === 0) {
+                wrongHtml = '<div class="empty-message">Aucune erreur !</div>';
+            } else {
+                wrongAnswers.slice(-10).forEach(item => {
+                    wrongHtml += `<div class="problem-item">
+                        <div>${item.question}</div>
+                        <div style="font-size: 0.9em; color: #666;">
+                            Réponse : ${item.correctAnswer}
+                        </div>
+                    </div>`;
+                });
+            }
+            document.getElementById('wrongAnswers').innerHTML = wrongHtml;
+            
+            // Je ne comprends pas
+            const dontUnderstand = data.filter(item => item.isDontUnderstand);
+            let dontHtml = '';
+            if (dontUnderstand.length === 0) {
+                dontHtml = '<div class="empty-message">Aucune question incomprise !</div>';
+            } else {
+                dontUnderstand.slice(-10).forEach(item => {
+                    dontHtml += `<div class="problem-item dont-understand-item">
+                        <div>${item.question}</div>
+                        <div style="font-size: 0.9em; color: #666;">
+                            Réponse : ${item.correctAnswer}
+                        </div>
+                    </div>`;
+                });
+            }
+            document.getElementById('dontUnderstand').innerHTML = dontHtml;
+            
+            // Stats générales
+            const total = data.length;
+            const correct = data.filter(item => item.isCorrect).length;
+            const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            document.getElementById('generalStats').innerHTML = `
+                <div style="font-size: 1.2em;">
+                    <strong>Score global : ${percentage}%</strong>
+                    <div>${correct} bonnes réponses sur ${total}</div>
+                </div>
+            `;
+        }
+
+        // Retour menu
+        function backToMenu() {
+            document.getElementById('mainMenu').style.display = 'block';
+            document.getElementById('exerciseArea').style.display = 'none';
+            document.getElementById('statsPanel').style.display = 'none';
+        }
+
+        // Mélanger tableau
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>
